@@ -1,5 +1,7 @@
 interface Props {
   title: string;
+  subTitle: string;
+  image?: string | [];
 }
 
 const MyComponent: React.FC<Props> = ({ title }) => {
