@@ -1,24 +1,33 @@
 import GlassCard from "@/components/polished/GlassCard";
 import { Activity, ArrowUpRight, DollarSign, Users } from "lucide-react";
 
-// FORCE DYNAMIC: This page will be server-rendered on every request
-export const dynamic = 'force-dynamic';
+// TODO 2: Enable Server-Side Rendering (SSR)
+// This page should fetch fresh data on every request.
+// Add the Next.js route segment config to force dynamic rendering.
+// Hint: export const dynamic = 'force-dynamic'
+// Documentation: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic
 
+// TODO 3: Implement getAnalyticsData function
+// This function should:
+// 1. Simulate a database call with a 300ms delay (use Promise + setTimeout)
+// 2. Return an object with: revenue, activeUsers, bounceRate, salesToday
+// 3. Add Math.random() to each value to demonstrate that data changes on each request
+// Example: revenue: 12450 + Math.floor(Math.random() * 5000)
 async function getAnalyticsData() {
-  // Simulate DB Call delay
-  await new Promise(resolve => setTimeout(resolve, 300));
-
-  // Randomize data to show "Live" SSR changes
+  // Your code here
   return {
-    revenue: 12450 + Math.floor(Math.random() * 5000),
-    activeUsers: 840 + Math.floor(Math.random() * 200),
-    bounceRate: 24 + Math.floor(Math.random() * 5),
-    salesToday: 45 + Math.floor(Math.random() * 20)
+    revenue: 0,
+    activeUsers: 0,
+    bounceRate: 0,
+    salesToday: 0
   };
 }
 
 export default async function DashboardPage() {
-  const data = await getAnalyticsData();
+  // TODO 4: Fetch data in the server component
+  // Call getAnalyticsData() and store the result in a variable called 'data'
+  // Hint: const data = await getAnalyticsData();
+  const data = { revenue: 0, activeUsers: 0, bounceRate: 0, salesToday: 0 }; // Replace this line
   const timestamp = new Date().toLocaleTimeString();
 
   const stats = [

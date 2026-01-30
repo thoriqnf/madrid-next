@@ -1,8 +1,11 @@
 import GlassCard from "@/components/polished/GlassCard";
 import { HelpCircle, ChevronRight, Zap } from "lucide-react";
 
-// FORCE STATIC: This page is built once and cached indefinitely (until next build)
-export const dynamic = 'force-static';
+// TODO 1: Enable Static Site Generation (SSG)
+// This page should be built once at build time and served to all users.
+// Add the Next.js route segment config to force static rendering.
+// Hint: export const dynamic = 'force-static'
+// Documentation: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic
 
 const faqs = [
   {

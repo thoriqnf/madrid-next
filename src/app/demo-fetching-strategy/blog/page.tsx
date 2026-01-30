@@ -1,38 +1,28 @@
 import GlassCard from "@/components/polished/GlassCard";
-import { Newspaper, Clock, RefreshGw } from "lucide-react";
+import { Newspaper, Clock, RefreshCw } from "lucide-react";
 
-// REVALIDATE: This page will be regenerated at most once every 60 seconds
-export const revalidate = 60;
+// TODO 5: Enable Incremental Static Regeneration (ISR)
+// This page should regenerate at most once every 60 seconds.
+// Add the revalidate config to enable time-based regeneration.
+// Hint: export const revalidate = 60
+// Documentation: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#revalidate
 
+// TODO 6: Implement getLatestNews function
+// This function should:
+// 1. Return an array of news objects (at least 3 items)
+// 2. Each object should have: id, title, category, readTime, views
+// 3. Add Math.random() to views to demonstrate regeneration over time
+// Example: views: 1200 + Math.floor(Math.random() * 500)
 async function getLatestNews() {
-  // Simulate fetching from a CMS
-  return [
-    {
-      id: 1,
-      title: "Next.js 16 Released: Everything You Need to Know",
-      category: "Engineering",
-      readTime: "5 min",
-      views: 1200 + Math.floor(Math.random() * 500) // Randomize to show updates
-    },
-    {
-      id: 2,
-      title: "The Future of Glassmorphism in Web Design",
-      category: "Design",
-      readTime: "8 min",
-      views: 850 + Math.floor(Math.random() * 200)
-    },
-    {
-      id: 3,
-      title: "Optimizing Core Web Vitals with ISR",
-      category: "Performance",
-      readTime: "12 min",
-      views: 2100 + Math.floor(Math.random() * 1000)
-    }
-  ];
+  // Your code here
+  return [];
 }
 
 export default async function BlogPage() {
-  const news = await getLatestNews();
+  // TODO 7: Fetch news data in the component
+  // Call getLatestNews() and store the result in a variable called 'news'
+  // Hint: const news = await getLatestNews();
+  const news: any[] = []; // Replace this line
   const generatedAt = new Date().toLocaleTimeString();
 
   return (

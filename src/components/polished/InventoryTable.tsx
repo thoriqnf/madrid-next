@@ -10,43 +10,38 @@ import type { DemoProduct } from "@/lib/demo-db";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function InventoryTable() {
-  const { data, error, isLoading, mutate } = useSWR<DemoProduct[]>('/api/demo-products', fetcher);
+  // TODO 8: Set up client-side data fetching with SWR
+  // Import and use the useSWR hook to fetch from '/api/demo-products'
+  // You'll need: data, error, isLoading, and mutate from the hook
+  // Hint: const { data, error, isLoading, mutate } = useSWR<DemoProduct[]>('/api/demo-products', fetcher)
+  const data: DemoProduct[] = [];
+  const error = null;
+  const isLoading = false;
+  const mutate = () => { };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // TODO 9: Implement handleDelete function
+  // This function should:
+  // 1. Show a confirmation dialog (use window.confirm)
+  // 2. Perform optimistic update: immediately remove item from UI using mutate()
+  // 3. Call DELETE API endpoint: fetch(`/api/demo-products?id=${id}`, { method: 'DELETE' })
+  // 4. Revalidate data with mutate() to sync with server
   async function handleDelete(id: number) {
-    if (!confirm("Are you sure?")) return;
-
-    // Optimistic Update
-    mutate(data?.filter(p => p.id !== id), false);
-
-    await fetch(`/api/demo-products?id=${id}`, { method: 'DELETE' });
-    mutate(); // Revalidate proper
+    // Your code here
   }
 
+  // TODO 10: Implement handleSubmit function
+  // This function should:
+  // 1. Prevent default form submission with e.preventDefault()
+  // 2. Extract form data using FormData
+  // 3. Create newProduct object with: name, price, stock, category, status
+  // 4. POST to '/api/demo-products' with JSON body
+  // 5. Close modal, reset submitting state, and revalidate with mutate()
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const formData = new FormData(e.currentTarget);
-    const newProduct = {
-      name: formData.get('name'),
-      price: parseFloat(formData.get('price') as string),
-      stock: parseInt(formData.get('stock') as string),
-      category: formData.get('category'),
-      status: parseInt(formData.get('stock') as string) > 0 ? 'In Stock' : 'Sold Out',
-    };
-
-    await fetch('/api/demo-products', {
-      method: 'POST',
-      body: JSON.stringify(newProduct),
-    });
-
-    setIsSubmitting(false);
-    setIsModalOpen(false);
-    mutate();
+    // Your code here
   }
-
-  if (error) return <div className="text-red-400">Failed to load inventory.</div>;
 
   return (
     <div className="space-y-6">
@@ -67,10 +62,16 @@ export default function InventoryTable() {
       </div>
 
       <GlassCard className="p-0 overflow-hidden">
+        {/* TODO 11: Handle loading and error states */}
+        {/* Show skeleton loader while isLoading is true */}
+        {/* Show error message if error exists */}
+        {/* Otherwise, show the table with data */}
         {isLoading ? (
           <div className="p-8 space-y-4 animate-pulse">
             {[1, 2, 3].map(i => <div key={i} className="h-12 bg-zinc-800/50 rounded-lg" />)}
           </div>
+        ) : error ? (
+          <div className="p-8 text-center text-red-400">Failed to load inventory.</div>
         ) : (
           <div className="w-full overflow-x-auto">
             <table className="w-full text-left text-sm">
