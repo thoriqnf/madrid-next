@@ -2,59 +2,44 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { AUTH_COOKIE, User } from './lib/auth';
 
-// TODO 2: Configure Route Protection (Proxy)
+// TODO AUTH 2: Configure Route Protection (Proxy)
 // This file intercepts EVERY request. We can check cookies here to decide
 // if a user is allowed to visit a page.
 
-// Define which routes need what permissions
+// Step 1: Define which routes need what permissions
 const PROTECTED_ROUTES = {
-  '/dashboard': ['user', 'admin'], // Both User and Admin can see dashboard
-  '/private': ['admin'],           // Only Admin can see private
+  // Key: Route path (starts with)
+  // Value: Array of allowed roles
+  // Example: '/dashboard': ['user', 'admin'],
+  '/dashboard': ['user', 'admin'],
+  '/private': ['admin'],
 } as const;
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // 1. Check if user is authenticated
-  const authCookie = request.cookies.get(AUTH_COOKIE);
-  let user: User | null = null;
+  // TODO AUTH: Implement Route Protection Logic
   
-  if (authCookie) {
-    try {
-      user = JSON.parse(authCookie.value);
-    } catch {
-      // Invalid cookie
-    }
-  }
+  // 1. Get the auth cookie from the request
+  // const authCookie = ...
 
-  const isLoggedIn = !!user;
+  // 2. Parse the cookie to get the user (if it exists)
+  // let user ...
 
-  // 2. Handle Login Page Redirection
-  // If user is already logged in and tries to access login page, redirect to dashboard
-  if (isLoggedIn && pathname === '/login') {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
+  // 3. Check if the user is logged in (!!user)
+  // const isLoggedIn = ...
 
-  // 3. Check for protected routes
-  const protectedRouteKey = Object.keys(PROTECTED_ROUTES).find(route => 
-    pathname.startsWith(route)
-  );
+  // 4. Handle Redirects
+  
+  // A. Redirect authenticated users AWAY from the login page
+  // if (isLoggedIn && pathname === '/login') ...
 
-  if (protectedRouteKey) {
-    // If not logged in, redirect to login
-    if (!isLoggedIn) {
-      const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', pathname);
-      return NextResponse.redirect(url);
-    }
+  // B. Check if the current path is a PROTECTED route
+  // const protectedRouteKey = ...
 
-    // Role-based access control
-    const allowedRoles = PROTECTED_ROUTES[protectedRouteKey as keyof typeof PROTECTED_ROUTES];
-    if (user && !allowedRoles.includes(user.role as any)) {
-      // User is logged in but doesn't have permission
-      return NextResponse.redirect(new URL('/access-denied', request.url));
-    }
-  }
-
+  // C. If protected...
+  //    i. If not logged in -> Redirect to /login
+  //    ii. If logged in but WRONG role -> Redirect to /access-denied
+  
   return NextResponse.next();
 }

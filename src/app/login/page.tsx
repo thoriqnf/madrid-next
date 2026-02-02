@@ -12,7 +12,7 @@ export default function LoginPage() {
   );
 }
 
-// TODO 4: Create the Login UI
+// TODO AUTH 4: Create the Login UI
 // We use a simple form with two buttons to simulate different user roles.
 function LoginForm() {
   const searchParams = useSearchParams();

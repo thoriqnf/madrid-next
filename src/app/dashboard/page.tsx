@@ -1,12 +1,14 @@
 import LogoutButton from '@/components/LogoutButton';
 import { getSession } from '@/lib/auth';
 
-// TODO 5: Protected Page Example
-// This page is protected by the proxy. If a user is not logged in, they are redirected.
-// We can also access the user session here to display their name.
+// TODO AUTH 5: Protected Page Example
+// This page is protected by the proxy.
 
 export default async function DashboardPage() {
-  const session = await getSession();
+  // TODO AUTH: Get the real session
+  const session = await getSession(); // This will return null until TODO 1 is fixed
+  
+  // Check if user is admin
   const isAdmin = session?.role === 'admin';
 
   return (
@@ -16,14 +18,15 @@ export default async function DashboardPage() {
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <p className="font-medium text-zinc-200">{session?.name}</p>
-              <p className="text-xs text-zinc-500 uppercase tracking-wider">{session?.role}</p>
+              {/* If session is null, these will be empty */}
+              <p className="font-medium text-zinc-200">{session?.name || 'Guest'}</p>
+              <p className="text-xs text-zinc-500 uppercase tracking-wider">{session?.role || 'Visitor'}</p>
             </div>
             <LogoutButton />
           </div>
         </div>
 
-        {/* Content Visible to Everyone (User & Admin) */}
+        {/* Content Visible to Everyone */}
         <div className="rounded-xl bg-zinc-900 p-6 ring-1 ring-white/10">
           <h2 className="mb-4 text-xl font-semibold text-zinc-200">Public Dashboard Area</h2>
           <p className="text-zinc-400">

@@ -1,9 +1,7 @@
 import { cookies } from 'next/headers';
 
-// TODO 1: Setup Mock Authentication
-// Since we don't have a backend, we simulated it using Cookies.
-// This file contains helpers to set, get, and remove the auth cookie.
-
+// TODO AUTH 1: Setup Mock Authentication
+// Define the name of the cookie we will use to store the session
 export const AUTH_COOKIE = 'auth_token';
 
 export type UserRole = 'admin' | 'user' | 'guest';
@@ -16,43 +14,28 @@ export interface User {
 }
 
 export async function login(role: UserRole) {
-  // In a real app, you would validate credentials here
-  const user: User = {
-    id: crypto.randomUUID(),
-    name: role === 'admin' ? 'Admin User' : 'Standard User',
-    role,
-  };
-
-  // Create a session (mock)
-  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
-  const cookieStore = await cookies();
+  // TODO AUTH: Implement Login Logic
+  // 1. Create a dummy user object based on the role (admin vs user)
+  // 2. Create a session expiration (e.g., 1 day)
+  // 3. Set a cookie with the user data (JSON.stringify)
   
-  // Storing simple JSON in cookie for this demo
-  cookieStore.set(AUTH_COOKIE, JSON.stringify(user), {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    expires,
-    sameSite: 'lax',
-    path: '/',
-  });
-
-  return user;
+  console.log(`[Mock Auth] Logging in as ${role}...`);
+  return null;
 }
 
 export async function logout() {
-  const cookieStore = await cookies();
-  cookieStore.delete(AUTH_COOKIE);
+  // TODO AUTH: Implement Logout Logic
+  // 1. Delete the auth cookie
+  
+  console.log('[Mock Auth] Logging out...');
 }
 
 export async function getSession(): Promise<User | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(AUTH_COOKIE);
-
-  if (!token) return null;
-
-  try {
-    return JSON.parse(token.value) as User;
-  } catch {
-    return null;
-  }
+  // TODO AUTH: Implement Session Retrieval
+  // 1. Get the cookie store
+  // 2. Retrieve the AUTH_COOKIE
+  // 3. Parse the JSON value and return the User object
+  // 4. Return null if no cookie exists
+  
+  return null;
 }
