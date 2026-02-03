@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useCart } from '@/context/CartContext';
+// import { useCart } from '@/context/CartContext';
 import { Plus, ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -14,7 +14,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ id, name, price, description, color }: ProductCardProps) {
-  const { addItem } = useCart();
+  // TODO CONTEXT 9: Connect to Cart Context
+  // const { addItem } = useCart();
 
   return (
     <motion.div
@@ -34,7 +35,8 @@ export default function ProductCard({ id, name, price, description, color }: Pro
         <div className="mt-6 flex items-center justify-between">
           <span className="text-xl font-bold text-white">${price}</span>
           <button
-            onClick={() => addItem({ id, name, price })}
+            // TODO CONTEXT 9: Implement onClick to add item
+            // onClick={() => addItem({ id, name, price })}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-950 transition-transform hover:scale-110 active:scale-95"
           >
             <Plus className="h-5 w-5" />

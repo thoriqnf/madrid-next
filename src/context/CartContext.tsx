@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+// Types are provided for you
 export interface CartItem {
   id: string;
   name: string;
@@ -19,59 +20,67 @@ interface CartContextType {
   total: number;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+// TODO CONTEXT 1: Create the context
+// usage: createContext<Type | undefined>(undefined)
+const CartContext = undefined; 
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  // TODO CONTEXT 2: Initialize state
+  // You need:
+  // 1. items state (CartItem array)
+  // 2. cartNote state (string)
   const [items, setItems] = useState<CartItem[]>([]);
   const [cartNote, setCartNote] = useState<string>('');
 
+  // TODO CONTEXT 3: Implement addItem
+  // It should check if item exists, if so increment quantity, else add new item with quantity 1
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
-    setItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === newItem.id);
-      if (existingItem) {
-        return prevItems.map((item) =>
-          item.id === newItem.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prevItems, { ...newItem, quantity: 1 }];
-    });
+    // console.log("Implement addItem", newItem);
   };
 
+  // TODO CONTEXT 4: Implement removeItem
+  // It should filter out the item with the given id
   const removeItem = (id: string) => {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    // console.log("Implement removeItem", id);
   };
 
+  // TODO CONTEXT 5: Implement updateCartNote
+  // It should update the cartNote state
   const updateCartNote = (note: string) => {
-    setCartNote(note);
+    // console.log("Implement updateCartNote", note);
   };
 
   const clearCart = () => {
     setItems([]);
   };
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // TODO CONTEXT 6: Calculate total
+  // Reduce items to get total price
+  const total = 0;
 
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        cartNote,
-        addItem,
-        removeItem,
-        updateCartNote,
-        clearCart,
-        total,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
+    // <CartContext.Provider ... >
+      // {children}
+    // </CartContext.Provider>
+    // Remove this fragment and uncomment above when Context is created
+    <>{children}</> 
   );
 }
 
 export function useCart() {
-  const context = useContext(CartContext);
-  if (context === undefined) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
+  // TODO CONTEXT 7: Implement useCart hook
+  // It should use useContext(CartContext) and throw error if undefined
+  
+  // return context;
+  
+  // Temporary return to prevent crash before implementation
+  return {
+    items: [],
+    cartNote: '',
+    addItem: () => {},
+    removeItem: () => {},
+    updateCartNote: () => {},
+    clearCart: () => {},
+    total: 0
+  };
 }

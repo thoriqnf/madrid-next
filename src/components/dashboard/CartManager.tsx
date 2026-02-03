@@ -1,12 +1,21 @@
 'use client';
 
 import React from 'react';
-import { useCart } from '@/context/CartContext';
+// import { useCart } from '@/context/CartContext';
 import { ShoppingBag, Trash2, StickyNote } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CartManager() {
-  const { items, cartNote, updateCartNote, removeItem, total, clearCart } = useCart();
+  // TODO CONTEXT 10: Connect to Cart Context
+  // const { items, cartNote, updateCartNote, removeItem, total, clearCart } = useCart();
+  
+  // MOCK DATA for Starter
+  const items: any[] = [];
+  const cartNote = "";
+  const total = 0;
+  const updateCartNote = (note: string) => {};
+  const removeItem = (id: string) => {};
+  const clearCart = () => {};
 
   return (
     <div className="rounded-2xl bg-zinc-900 border border-zinc-800 p-6 shadow-2xl overflow-hidden relative">
@@ -32,6 +41,7 @@ export default function CartManager() {
               Your cart is empty. Add some products!
             </motion.p>
           ) : (
+            // Only uncomment this when items are available from context
             items.map((item) => (
               <motion.div
                 key={item.id}

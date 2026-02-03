@@ -1,6 +1,6 @@
 import LogoutButton from '@/components/LogoutButton';
 import { getSession } from '@/lib/auth';
-import { CartProvider } from '@/context/CartContext';
+// import { CartProvider } from '@/context/CartContext';
 import ProductCard from '@/components/dashboard/ProductCard';
 import CartManager from '@/components/dashboard/CartManager';
 
@@ -21,7 +21,8 @@ export default async function DashboardPage() {
   const isAdmin = session?.role === 'admin';
 
   return (
-    <CartProvider>
+    // TODO CONTEXT 8: Wrap the Dashboard in CartProvider
+    // <CartProvider>
       <div className="flex min-h-screen flex-col items-center bg-zinc-950 p-8 text-white">
         <div className="w-full max-w-5xl space-y-8">
           <div className="flex items-center justify-between border-b border-zinc-800 pb-6">
@@ -93,6 +94,6 @@ export default async function DashboardPage() {
           )}
         </div>
       </div>
-    </CartProvider>
+    // </CartProvider>
   );
 }
