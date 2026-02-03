@@ -8,17 +8,17 @@ import { redirect } from 'next/navigation';
 
 export async function loginAction(role: UserRole, callbackUrl: string = '/dashboard') {
   // TODO AUTH: Call the authLogin function
-  // await authLogin(role);
-  
   // TODO AUTH: Redirect the user to the callbackUrl
-  // redirect(callbackUrl);
-  
   console.log('Login Action triggered');
+  await authLogin(role);
+  
+  redirect(callbackUrl);
+  
 }
 
 export async function logoutAction() {
   // TODO AUTH: Call the authLogout function
-  // await authLogout();
+  await authLogout();
   
   console.log('Logout Action triggered');
   redirect('/login');

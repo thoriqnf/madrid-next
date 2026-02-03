@@ -20,26 +20,38 @@ export function proxy(request: NextRequest) {
   
   // TODO AUTH: Implement Route Protection Logic
   
-  // 1. Get the auth cookie from the request
-  // const authCookie = ...
+  const authCookie = request.cookies.get(AUTH_COOKIE)
+  let user: User | null = null;
+  if(authCookie){
+    try{
+      user = JSON.parse(authCookie.value)
+    }catch{
+      console.log('tidak punya cookie')
+    }
+  }
 
-  // 2. Parse the cookie to get the user (if it exists)
-  // let user ...
+  const isLoggedin = !!user;
 
-  // 3. Check if the user is logged in (!!user)
-  // const isLoggedIn = ...
+  if(isLoggedin && pathname === '/login'){
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
 
-  // 4. Handle Redirects
-  
-  // A. Redirect authenticated users AWAY from the login page
-  // if (isLoggedIn && pathname === '/login') ...
+  const protectedRouteKey = Object.keys(PROTECTED_ROUTES).find(route => pathname.startsWith(route))
 
-  // B. Check if the current path is a PROTECTED route
-  // const protectedRouteKey = ...
+  if (protectedRouteKey) {
+    // if not logged in, we kick them into login page
+    if (!isLoggedin){
+      const url = new URL('/login', request.url)
+      url.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(url)
+    }
+    // RBAC
 
-  // C. If protected...
-  //    i. If not logged in -> Redirect to /login
-  //    ii. If logged in but WRONG role -> Redirect to /access-denied
+    const allowedRoles = PROTECTED_ROUTES[protectedRouteKey as keyof typeof PROTECTED_ROUTES]
+    if(user && !allowedRoles.includes(user.role as any)){
+      return NextResponse.redirect(new URL('/access-denied', request.url))
+    }
+  }
   
   return NextResponse.next();
 }
