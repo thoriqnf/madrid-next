@@ -1,11 +1,10 @@
-import React from 'react'
+import React from 'react';
 
-export const DemoComponent = () => {
+export default function DemoComponent({ title }: { title: string }) {
   return (
     <div>
-      <h1>Testing Demo</h1>
-      <p>This is a super simple component for testing.</p>
-      <button>Click Me</button>
+      <h1>{title}</h1>
+      <button onClick={() => console.log('clicked')}>Click me</button>
     </div>
-  )
+  );
 }

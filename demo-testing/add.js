@@ -1,7 +1,7 @@
-export const add = (num1, num2) => {
-  return num1 + num2
-}
+export const add = (a, b) => {
+  return a + b;
+};
 
-export const obj = () => {
-  return { num1: 1, num2: 2}
-}
+export const subtract = (a, b) => {
+  return a - b;
+};
