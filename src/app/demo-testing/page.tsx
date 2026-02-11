@@ -1,4 +1,5 @@
 import UserProfileForm from './UserProfileForm';
+import AsyncUserDashboard from './AsyncUserDashboard';
 
 export default function DemoTestingPage() {
   return (
@@ -14,6 +15,10 @@ export default function DemoTestingPage() {
         </div>
         
         <UserProfileForm />
+
+        <div className="mt-8">
+          <AsyncUserDashboard />
+        </div>
 
         <div className="mt-10 p-6 bg-slate-900/50 border border-slate-800 rounded-xl backdrop-blur-sm">
           <div className="flex items-center space-x-2 mb-4">
