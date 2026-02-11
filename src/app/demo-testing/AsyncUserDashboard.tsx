@@ -7,6 +7,23 @@ interface UserData {
   stats: { posts: number; followers: number; following: number };
 }
 
+/**
+ * Validates that the API response has the expected shape.
+ * Exported so we can unit test this logic independently.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function validateDashboardResponse(json: any): json is UserData {
+  return !!json.user && !!json.stats;
+}
+
+/**
+ * Formats a number for display (e.g. 1200 → "1,200").
+ * Exported so we can unit test this logic independently.
+ */
+export function formatStatNumber(value: number): string {
+  return value.toLocaleString();
+}
+
 export default function AsyncUserDashboard() {
   const [data, setData] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +43,7 @@ export default function AsyncUserDashboard() {
       const json = await res.json();
 
       // Validate response shape
-      if (!json.user || !json.stats) {
+      if (!validateDashboardResponse(json)) {
         throw new Error('Invalid response format');
       }
 
@@ -47,7 +64,7 @@ export default function AsyncUserDashboard() {
     return (
       <div data-testid="loading-state" className="p-8 bg-slate-900 border border-slate-800 rounded-xl animate-pulse">
         <div className="flex items-center space-x-3">
-          <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+          <div className="w-5 h-5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
           <p className="text-slate-400 font-medium">Loading dashboard...</p>
         </div>
       </div>
@@ -83,7 +100,7 @@ export default function AsyncUserDashboard() {
     <div data-testid="dashboard" className="p-8 bg-slate-900 border border-slate-800 rounded-xl space-y-6">
       {/* User Info */}
       <div className="flex items-center space-x-4">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center">
           <span className="text-white font-bold text-lg">{data.user.name.charAt(0)}</span>
         </div>
         <div>
@@ -95,12 +112,12 @@ export default function AsyncUserDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Posts', value: data.stats.posts, color: 'text-cyan-400' },
+          { label: 'Posts', value: data.stats.posts, color: 'text-indigo-400' },
           { label: 'Followers', value: data.stats.followers, color: 'text-indigo-400' },
-          { label: 'Following', value: data.stats.following, color: 'text-purple-400' },
+          { label: 'Following', value: data.stats.following, color: 'text-indigo-400' },
         ].map((stat) => (
           <div key={stat.label} className="p-4 bg-slate-800/50 rounded-lg text-center border border-slate-700/50">
-            <p className={`text-2xl font-bold ${stat.color}`}>{stat.value.toLocaleString()}</p>
+            <p className={`text-2xl font-bold ${stat.color}`}>{formatStatNumber(stat.value)}</p>
             <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mt-1">{stat.label}</p>
           </div>
         ))}
