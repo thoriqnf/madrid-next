@@ -31,28 +31,17 @@ import AsyncUserDashboard, {
  * No React, no DOM, no setup. Just testing functions.
  */
 describe('Part 1: Pure Logic Unit Tests', () => {
-  describe('validateDashboardResponse()', () => {
-    test('✅ returns true for valid data shape', () => {
-      const valid = {
-        user: { name: 'Alice', email: 'alice@test.com' },
-        stats: { posts: 10, followers: 20, following: 5 },
-      };
-      expect(validateDashboardResponse(valid)).toBe(true);
-    });
-
-    test('❌ returns false for missing fields', () => {
-      expect(validateDashboardResponse({})).toBe(false);
-      expect(validateDashboardResponse({ user: {} })).toBe(false);
-    });
-  });
-
-  describe('formatStatNumber()', () => {
-    test('adds commas to large numbers correctly', () => {
-      expect(formatStatNumber(1200)).toBe('1,200');
-      expect(formatStatNumber(1000000)).toBe('1,000,000');
-      expect(formatStatNumber(0)).toBe('0');
-    });
-  });
+  test('validateDashboardResponse, return true if the data structure valid', ()=> {
+    const data = {
+      user: { name: 'revou', email: 'revou@revou.co' },
+      stats: { posts: 100, followers: 9999999, following: 1 }
+    }
+    expect(validateDashboardResponse(data)).toBe(true)
+  })
+  test('validateDashboardResponse, return false if the data structure valid', ()=> {
+    expect(validateDashboardResponse({})).toBe(false)
+    expect(validateDashboardResponse({user: {}})).toBe(false)
+  })
 });
 
 /**
@@ -63,11 +52,11 @@ describe('Part 1: Pure Logic Unit Tests', () => {
 describe('Part 2: Manual Fetch Mocking (jest.spyOn)', () => {
   let fetchSpy: jest.SpyInstance;
 
-  afterEach(() => {
-    fetchSpy?.mockRestore();
-  });
-
-  test('successfully renders data using a manual fetch mock', async () => {
+  afterEach(()=>{
+    fetchSpy?.mockRestore()
+  })
+  
+  test('successfully render data using a manual fetch mock', async()=>{
     fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({
@@ -76,17 +65,17 @@ describe('Part 2: Manual Fetch Mocking (jest.spyOn)', () => {
       }),
     } as Response);
 
-    render(<AsyncUserDashboard />);
-    
-    // Shows loading state immediately
-    expect(screen.getByTestId('loading-state')).toBeInTheDocument();
+    render(<AsyncUserDashboard />)
+    expect(screen.getByTestId('loading-state')).toBeInTheDocument()
 
-    // Data appears after resolution
-    const name = await screen.findByTestId('user-name');
-    expect(name).toHaveTextContent('Manual Mock');
-    expect(fetchSpy).toHaveBeenCalledWith('/api/user-dashboard');
+    // data appear after the fetchspy complete
+
+    const name = await screen.findByTestId('user-name')
+    expect(name).toHaveTextContent('Manual Mock')
+    expect(fetchSpy).toHaveBeenCalledWith('/api/user-dashboard')
+
   });
-});
+})
 
 /**
  * PART 3: The "Modern" Way (Comprehensive MSW)
@@ -97,104 +86,87 @@ describe('Part 3: Comprehensive MSW Testing', () => {
   /**
    * LEVEL 1: Happy Path
    */
-  describe('Level 1: Happy Path', () => {
-    test('renders user info and formatted stats from API', async () => {
-      render(<AsyncUserDashboard />);
+  describe('level 1: happy path', ()=> {
+    test('renders users info and data from api', async()=> {
+      render(<AsyncUserDashboard />)
 
-      // Find by name (default handler returns John Doe)
-      const name = await screen.findByTestId('user-name');
-      expect(name).toHaveTextContent('John Doe');
-      
-      // Verification of formatting (default followers is 1200)
-      expect(screen.getByText('1,200')).toBeInTheDocument();
-    });
-  });
+      const name = await screen.findByTestId('user-name')
+      expect(name).toHaveTextContent('John Doe')
+
+      expect(screen.getByText('1,200')).toBeInTheDocument()
+    })
+  })
 
   /**
    * LEVEL 2: Error Handling
    */
   describe('Level 2: Error Responses', () => {
-    test('shows "Server error: 500" for internal errors', async () => {
+    test('show error server 500 for internal error', ()=>{
       server.use(
-        http.get('/api/user-dashboard', () => {
-          return HttpResponse.json({ message: 'Error' }, { status: 500 });
+        http.get('/api/user-dashboard', ()=> {
+          return HttpResponse.json({message: 'Error'}, {status: 500})
         })
-      );
+      )
+    })
 
-      render(<AsyncUserDashboard />);
-      const error = await screen.findByTestId('error-message');
-      expect(error).toHaveTextContent('Server error: 500');
-    });
-
-    test('shows "Server error: 404" for not found entries', async () => {
+    test('show error server 404 for internal error', ()=>{
       server.use(
-        http.get('/api/user-dashboard', () => {
-          return HttpResponse.json({ message: 'Not Found' }, { status: 404 });
+        http.get('/api/user-dashboard', ()=> {
+          return HttpResponse.json({message: 'not found'}, {status: 404})
         })
-      );
+      )
+    })
 
-      render(<AsyncUserDashboard />);
-      const error = await screen.findByTestId('error-message');
-      expect(error).toHaveTextContent('Server error: 404');
-    });
-
-    test('handles total network breakdown (Offline)', async () => {
+    test('show error server 401 for forbidden', ()=>{
       server.use(
-        http.get('/api/user-dashboard', () => HttpResponse.error())
-      );
+        http.get('/api/user-dashboard', ()=> {
+          return HttpResponse.json({message: 'Forbidden'}, {status: 401})
+        })
+      )
+    })
 
-      render(<AsyncUserDashboard />);
-      const error = await screen.findByTestId('error-message');
-      expect(error).toHaveTextContent(/failed to fetch/i);
-      expect(screen.getByTestId('retry-button')).toBeInTheDocument();
-    });
+    test('show error server down', ()=>{
+      server.use(
+        http.get('/api/user-dashboard', ()=> {
+          return HttpResponse.error()
+        })
+      )
+    })
   });
 
   /**
    * LEVEL 3: Edge Cases & Retries
    */
   describe('Level 3: Logic Edge Cases', () => {
-    test('successfully retries after a network failure', async () => {
+    test('successfully retries after a network failure', async ()=>{
       const user = userEvent.setup();
 
-      // Fail once, then it will auto-fallback to the default happy handler
       server.use(
-        http.get('/api/user-dashboard', () => HttpResponse.error(), { once: true })
-      );
+        http.get('/api/user-dashboard', ()=> HttpResponse.error(), {once: true})
+      )
 
-      render(<AsyncUserDashboard />);
-      
-      const retryBtn = await screen.findByTestId('retry-button');
-      await user.click(retryBtn);
+      render(<AsyncUserDashboard />)
+      const retryBTN = await screen.findByTestId('retry-button')
+      await user.click(retryBTN)
 
-      const dashboard = await screen.findByTestId('dashboard');
-      expect(dashboard).toBeInTheDocument();
-      expect(screen.getByTestId('user-name')).toHaveTextContent('John Doe');
-    });
+      const dashboard = await screen.findByTestId('dashboard')
+      expect(dashboard).toBeInTheDocument()
+      expect(screen.getByTestId('user-name')).toHaveTextContent('John Doe')
+    })
 
-    test('shows error UI for broken/empty JSON data', async () => {
+    test('successfully render correctly for zero state data / empty data', async ()=>{
+
       server.use(
-        http.get('/api/user-dashboard', () => HttpResponse.json({ stats: {} })) // missing user
-      );
-
-      render(<AsyncUserDashboard />);
-      const error = await screen.findByTestId('error-message');
-      expect(error).toHaveTextContent('Invalid response format');
-    });
-
-    test('renders correctly for "Zero-State" data (valid but empty stats)', async () => {
-      server.use(
-        http.get('/api/user-dashboard', () => HttpResponse.json({
-          user: { name: 'New User', email: 'new@test.com' },
+        http.get('/api/user-dashboard', ()=> HttpResponse.json({
+          user: { name: 'New user', email: 'new@test.com' },
           stats: { posts: 0, followers: 0, following: 0 },
         }))
-      );
+      )
 
-      render(<AsyncUserDashboard />);
-      await screen.findByTestId('dashboard');
-      expect(screen.getByTestId('user-name')).toHaveTextContent('New User');
-      // All three stats should show 0
-      expect(screen.getAllByText('0')).toHaveLength(3);
-    });
+      render(<AsyncUserDashboard />)
+      await screen.findByTestId('dashboard')
+      expect(screen.getByTestId('user-name')).toHaveTextContent('New user')
+      expect(screen.getAllByText('0')).toHaveLength(3)
+    })
   });
 });

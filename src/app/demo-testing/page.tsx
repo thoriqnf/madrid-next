@@ -11,6 +11,11 @@ export default function DemoTestingPage() {
           <p className="text-slate-400 font-medium">
             Master <span className="text-indigo-400">Mock Service Worker (MSW)</span> and asynchronous rendering tests.
           </p>
+          <div className="pt-4">
+             <a href="/demo-testing/checkout" className="text-sm font-bold text-indigo-400 hover:text-indigo-300 underline underline-offset-4 decoration-2">
+                View E2E Checkout Logic &rarr;
+             </a>
+          </div>
         </div>
         
         <AsyncUserDashboard />
