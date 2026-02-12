@@ -101,36 +101,68 @@ describe('Part 3: Comprehensive MSW Testing', () => {
    * LEVEL 2: Error Handling
    */
   describe('Level 2: Error Responses', () => {
-    test('show error server 500 for internal error', ()=>{
+    test('show error server 500 for internal error', async ()=>{
       server.use(
         http.get('/api/user-dashboard', ()=> {
           return HttpResponse.json({message: 'Error'}, {status: 500})
         })
       )
+
+      render(<AsyncUserDashboard />)
+      const errorState = await screen.findByTestId('error-state')
+      expect(errorState).toBeInTheDocument()
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Server error: 500')
     })
 
-    test('show error server 404 for internal error', ()=>{
+    test('show error server 404 for internal error', async ()=>{
       server.use(
         http.get('/api/user-dashboard', ()=> {
           return HttpResponse.json({message: 'not found'}, {status: 404})
         })
       )
+
+      render(<AsyncUserDashboard />)
+      const errorState = await screen.findByTestId('error-state')
+      expect(errorState).toBeInTheDocument()
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Server error: 404')
     })
 
-    test('show error server 401 for forbidden', ()=>{
+    test('show error server 401 for forbidden', async ()=>{
       server.use(
         http.get('/api/user-dashboard', ()=> {
           return HttpResponse.json({message: 'Forbidden'}, {status: 401})
         })
       )
+
+      render(<AsyncUserDashboard />)
+      const errorState = await screen.findByTestId('error-state')
+      expect(errorState).toBeInTheDocument()
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Server error: 401')
     })
 
-    test('show error server down', ()=>{
+    test('show error server down', async ()=>{
       server.use(
         http.get('/api/user-dashboard', ()=> {
           return HttpResponse.error()
         })
       )
+
+      render(<AsyncUserDashboard />)
+      const errorState = await screen.findByTestId('error-state')
+      expect(errorState).toBeInTheDocument()
+    })
+
+    test('handles invalid response format gracefully', async ()=>{
+      server.use(
+        http.get('/api/user-dashboard', ()=> {
+          return HttpResponse.json({invalidData: 'missing user and stats'})
+        })
+      )
+
+      render(<AsyncUserDashboard />)
+      const errorState = await screen.findByTestId('error-state')
+      expect(errorState).toBeInTheDocument()
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Invalid response format')
     })
   });
 

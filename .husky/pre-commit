@@ -1,1 +1,1 @@
-npm test -- --watchAll=false --passWithNoTests
+npm test -- --watchAll=false --passWithNoTests --coverage

@@ -109,6 +109,24 @@ describe('ProductCheckout Component', () => {
     expect(screen.getByText('Address is required')).toBeInTheDocument();
   });
 
+  it.skip('validates email format and shows error for invalid email', async () => {
+    const { user } = setup();
+    
+    await user.click(screen.getAllByLabelText(/Add .* to cart/i)[0]);
+    await user.click(screen.getByText('Proceed to Checkout'));
+    
+    // Fill fields with invalid email (no @ symbol)
+    await user.type(screen.getByLabelText(/Full Name/i), 'Cyber Ronin');
+    await user.type(screen.getByLabelText(/Email Address/i), 'notemail');
+    await user.type(screen.getByLabelText(/Shipping Address/i), 'Sector 7');
+    
+    // Submit form
+    await user.click(screen.getByText('Complete Order'));
+    
+    // Should show email validation error
+    expect(screen.getByText('Email is invalid')).toBeInTheDocument();
+  });
+
 
   it('processes checkout successfully and allows returning to shop', async () => {
     const { user } = setup();
